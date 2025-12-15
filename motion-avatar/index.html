@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>香山公园数字模拟人测试</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        #video { display: none; }
+        canvas { display: block; position: absolute; top: 0; left: 0; pointer-events: none; }
+        #map-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
+        #museum-btn {
+            position: absolute;
+            left: 28%; top: 68%;
+            transform: translate(-50%, -50%);
+            padding: 18px 45px; font-size: 24px; background: #c62828; color: white;
+            border: none; border-radius: 15px; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+        #museum-btn:hover { background: #b71c1c; }
+        .bisu-badge {
+            position: fixed; left: 20px; top: 20px; 
+            font-size: 18px; color: white; background: #1976d2; 
+            padding: 10px 20px; border-radius: 30px; 
+            z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            cursor: default; /* 可改成 pointer 如果想加点击 */
+        }
+    </style>
+</head>
+<body>
+    <video id="video" width="640" height="480" autoplay playsinline></video>
+    <img id="map-bg" src="assets/xiangshan_map.jpg" alt="香山公园地图">
+    <canvas id="canvas"></canvas>
+
+    <button id="museum-btn" onclick="location.href='museum.html'">进入香山革命纪念馆</button>
+
+    <div class="bisu-badge">BISU zyp</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.140.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.140.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+
+    <script>
+        const scene = new THREE.Scene();
+
+        const aspect = window.innerWidth / window.innerHeight;
+        const zoom = 100;
+        const camera = new THREE.OrthographicCamera(-aspect * zoom, aspect * zoom, zoom, -zoom, 0.1, 1000);
+        camera.position.z = 10;
+
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas'), alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        scene.add(new THREE.AmbientLight(0xffffff, 2.5));
+        const dirLight = new THREE.DirectionalLight(0xffffff, 2.5);
+        dirLight.position.set(0, 10, 10);
+        scene.add(dirLight);
+
+        let panda = null;
+        const loader = new THREE.GLTFLoader();
+        loader.load('assets/cartoon.glb', (gltf) => {
+            panda = gltf.scene;
+            panda.scale.set(24, 24, 24);
+            panda.position.set(0, -30, 0);
+            scene.add(panda);
+        });
+
+        const pose = new Pose({locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`});
+        pose.setOptions({modelComplexity: 0, smoothLandmarks: true});
+
+        let smoothedNose = { x: 0.5, y: 0.5 };
+
+        pose.onResults(results => {
+            if (!results.poseLandmarks || !panda) return;
+            const nose = results.poseLandmarks[0];
+
+            smoothedNose.x = smoothedNose.x * 0.7 + nose.x * 0.3;
+            smoothedNose.y = smoothedNose.y * 0.7 + nose.y * 0.3;
+
+            panda.position.x = -(smoothedNose.x - 0.5) * 200;
+            panda.position.y = (0.5 - smoothedNose.y) * 140 - 30;
+            panda.rotation.y = (smoothedNose.x - 0.5) * Math.PI * 1.5;
+        });
+
+        const cam = new Camera(document.getElementById('video'), {
+            onFrame: async () => await pose.send({ image: document.getElementById('video') }),
+            width: 640, height: 480
+        });
+        cam.start();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            const aspect = window.innerWidth / window.innerHeight;
+            camera.left = -aspect * zoom;
+            camera.right = aspect * zoom;
+            camera.top = zoom;
+            camera.bottom = -zoom;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>

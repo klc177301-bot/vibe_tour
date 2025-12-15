@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>香山革命纪念馆图文讲解区</title>
+    <style>
+        body { 
+            margin: 0; padding: 20px; background: #f5f5f5; font-family: "Microsoft YaHei", Arial, sans-serif; color: #333; 
+            position: relative; min-height: 100vh;
+        }
+        h1 { text-align: center; color: #c62828; margin-bottom: 30px; }
+        .description { max-width: 900px; margin: 0 auto 40px; line-height: 1.8; font-size: 18px; text-align: justify; }
+        .main-img { 
+            width: 100%; max-width: 1000px; margin: 0 auto 30px; display: block; border-radius: 15px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3); 
+        }
+        .sub-gallery { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; margin-bottom: 40px; }
+        .sub-gallery img { width: 45%; max-width: 500px; border-radius: 15px; box-shadow: 0 6px 15px rgba(0,0,0,0.2); transition: transform 0.3s; }
+        .sub-gallery img:hover { transform: scale(1.05); }
+        .audio-panel {
+            position: fixed; right: 20px; top: 50%; transform: translateY(-50%);
+            background: rgba(255,255,255,0.95); padding: 20px 15px; border-radius: 15px; 
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3); width: 80px; text-align: center; z-index: 10;
+        }
+        .audio-panel label { display: block; font-size: 18px; color: #c62828; margin-bottom: 15px; font-weight: bold; }
+        .audio-panel audio { width: 60px; transform: rotate(-90deg); transform-origin: center; margin-top: 120px; }
+        .btn-group { text-align: center; margin: 40px 0; }
+        button { 
+            padding: 15px 40px; font-size: 20px; background: #c62828; color: white; border: none; border-radius: 12px; 
+            cursor: pointer; margin: 0 15px; box-shadow: 0 6px 15px rgba(0,0,0,0.3); transition: background 0.3s;
+        }
+        button:hover { background: #b71c1c; }
+        .watermark {
+            position: fixed; right: 20px; bottom: 20px; font-size: 18px; color: white; 
+            background: #1976d2; padding: 10px 20px; border-radius: 30px; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <h1>香山革命纪念馆</h1>
+
+    <div class="description">
+        香山革命纪念馆坐落于北京市海淀区红枫路，紧邻香山公园，是集中展现中共中央在香山时期革命历史的重要红色地标，2019年9月正式对外开放，以“为新中国奠基”为核心主题承载着厚重的历史记忆。这座采用新中式风格的建筑庄严肃穆，28根南立面廊柱象征中国共产党28年奋斗历程，19.49米高的国旗杆铭记新中国诞生之年，二层“四梁八柱”敞轩则寓意新中国政权搭建的历史底蕴，序厅内“毛泽东同志在香山”大型雕塑与320平方米《香山之春》油画相映成辉，两侧“渡江战役”与“共商国是”浮雕生动再现了那段峥嵘岁月。馆内5500平方米的基本陈列分为五个部分16个单元，通过800余张历史图片、1200余件珍贵文物（含开国大典礼炮、毛泽东手书电文等）及全息影像、沉浸式场景等现代展陈技术，全景还原了1949年中共中央进驻香山“进京赶考”、指挥解放全中国、筹建新中国的光辉历程，同时设有“人民的文艺 前进的号角”等专题展览，兼具爱国主义教育与文化传播功能，如今已成为全国爱国主义教育示范基地，参观者可在触摸历史中感悟革命精神、汲取奋进力量。
+        <br><br>
+        主要展区包括双清别墅、来青轩等革命旧址，以及大量珍贵历史照片和文物。
+    </div>
+
+    <!-- 主图：外观大图 -->
+    <img class="main-img" src="assets/memorial1.jpg" alt="香山革命纪念馆外观">
+
+    <!-- 子图：内部 + 文物并排 -->
+    <div class="sub-gallery">
+        <img src="assets/memorial2.jpg" alt="展厅内部">
+        <img src="assets/memorial3.jpg" alt="历史文物">
+    </div>
+
+    <!-- 竖向语音解说面板（进入页面自动播放） -->
+    <div class="audio-panel">
+        <label>语音解说</label>
+        <audio id="lecture-audio" controls autoplay>
+            <source src="assets/xiangshanword.mp3" type="audio/mpeg">
+            您的浏览器不支持音频播放。
+        </audio>
+    </div>
+
+    <div class="btn-group">
+        <button onclick="history.back()">返回地图</button>
+        <button onclick="window.open('https://www.xiangshan1949.cn', '_blank')">查看详情</button>
+    </div>
+
+    <div class="watermark">BISU zyp</div>
+</body>
+</html>
